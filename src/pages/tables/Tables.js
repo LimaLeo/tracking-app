@@ -1,45 +1,49 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import MUIDataTable from "mui-datatables";
+import axios from 'axios';
 
 import PageTitle from '../../components/PageTitle';
 
-const datatableData = [
- ["Joe James", "Example Inc.", "Yonkers", "NY"],
- ["John Walsh", "Example Inc.", "Hartford", "CT"],
- ["Bob Herm", "Example Inc.", "Tampa", "FL"],
- ["James Houston", "Example Inc.", "Dallas", "TX"],
- ["Prabhakar Linwood", "Example Inc.", "Hartford", "CT"],
- ["Kaui Ignace", "Example Inc.", "Yonkers", "NY"],
- ["Esperanza Susanne", "Example Inc.", "Hartford", "CT"],
- ["Christian Birgitte", "Example Inc.", "Tampa", "FL"],
- ["Meral Elias", "Example Inc.", "Hartford", "CT"],
- ["Deep Pau", "Example Inc.", "Yonkers", "NY"],
- ["Sebastiana Hani", "Example Inc.", "Dallas", "TX"],
- ["Marciano Oihana", "Example Inc.", "Yonkers", "NY"],
- ["Brigid Ankur", "Example Inc.", "Dallas", "TX"],
- ["Anna Siranush", "Example Inc.", "Yonkers", "NY"],
- ["Avram Sylva", "Example Inc.", "Hartford", "CT"],
- ["Serafima Babatunde", "Example Inc.", "Tampa", "FL"],
- ["Gaston Festus", "Example Inc.", "Tampa", "FL"],
-];
+class Tables extends React.Component {
+  state = {
+    groups: []
+  }
 
-const Tables = props => (
-  <React.Fragment>
-    <PageTitle title="Monitoramento" />
-    <Grid container spacing={32}>
-      <Grid item xs={12}>
-        <MUIDataTable
-          title="Employee List"
-          data={datatableData}
-          columns={["Name", "Company", "City", "State"]}
-          options={{
-            filterType: 'checkbox',
-          }}
-        />
+  componentDidMount() {
+    axios.get('https://za7gskmdj6.execute-api.us-east-1.amazonaws.com/dev/monitoring/list?userId=1', {
+      headers: {
+        'Content-type': 'aplication/json',
+        'x-api-key': process.env.REACT_APP_X_API_KEY,
+      },
+    })
+      .then(response => response.data)
+      .then(data => {
+        let groups = data.reduce((acumulador, item) => {
+          return acumulador.concat([Object.values(item).map(item => item)]);
+        }, []);
+
+        this.setState({ groups:  groups});
+      });
+  }
+ 
+  render() {
+    return (<React.Fragment>
+      <PageTitle title="Monitoramento" />
+      <Grid container spacing={32}>
+        <Grid item xs={12}>
+          <MUIDataTable
+            title="Lista de grupos"
+            data={this.state.groups}
+            columns={["Nome", "Descrição", "Rotina"]} // name, description, rule
+            options={{
+              filterType: 'checkbox',
+            }}
+          />
+        </Grid>
       </Grid>
-    </Grid>
-  </React.Fragment>
-);
+    </React.Fragment>
+  )};
+}
 
 export default Tables;
