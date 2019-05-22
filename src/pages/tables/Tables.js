@@ -4,10 +4,12 @@ import MUIDataTable from "mui-datatables";
 import axios from 'axios';
 
 import PageTitle from '../../components/PageTitle';
+import TableToolbarSelect from "./TableToolbarSelect";
 
 class Tables extends React.Component {
   state = {
-    groups: []
+    groups: [],
+    ids: [],
   }
 
   componentDidMount() {
@@ -19,11 +21,19 @@ class Tables extends React.Component {
     })
       .then(response => response.data)
       .then(data => {
+        let ids = [];
         let groups = data.reduce((acumulador, item) => {
+          ids.push(item.id_group);
+          delete item.id_group;
           return acumulador.concat([Object.values(item).map(item => item)]);
         }, []);
 
-        this.setState({ groups:  groups});
+        console.log(ids);
+
+        this.setState({ 
+          groups:  groups,
+          ids: ids,
+        });
       });
   }
  
@@ -38,6 +48,9 @@ class Tables extends React.Component {
             columns={["Nome", "Descrição", "Rotina"]} // name, description, rule
             options={{
               filterType: 'checkbox',
+              customToolbarSelect:selectedRows => (
+                <TableToolbarSelect selectedRows={selectedRows} ids={this.state.ids} />
+              )
             }}
           />
         </Grid>

@@ -17,7 +17,7 @@ import SidebarLink from './components/SidebarLink/SidebarLinkContainer';
 
 const structure = [
   { id: 0, label: 'Dashboard', link: '/app/dashboard', icon: <HomeIcon /> },
-  { id: 2, label: 'Monitoramentos', link: '/app/groups', icon: <TableIcon /> },
+  { id: 2, label: 'Monitoramento', link: '/app/groups', icon: <TableIcon /> },
   { id: 5, type: 'divider' },
   { id: 6, type: 'title', label: 'AJUDA' },
   { id: 8, label: 'Suporte', link: '', icon: <SupportIcon /> },
