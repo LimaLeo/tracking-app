@@ -36,7 +36,7 @@ class Tables extends React.Component {
         });
       });
   }
- 
+
   render() {
     return (<React.Fragment>
       <PageTitle title="Monitoramento" />
@@ -47,8 +47,10 @@ class Tables extends React.Component {
             data={this.state.groups}
             columns={["Nome", "Descrição", "Rotina"]} // name, description, rule
             options={{
-              filterType: 'checkbox',
-              customToolbarSelect:selectedRows => (
+              filter: true,
+              filterType: "dropdown",
+              responsive: "scroll",
+              customToolbarSelect: selectedRows => (
                 <TableToolbarSelect selectedRows={selectedRows} ids={this.state.ids} />
               )
             }}
@@ -56,7 +58,8 @@ class Tables extends React.Component {
         </Grid>
       </Grid>
     </React.Fragment>
-  )};
+    )
+  };
 }
 
 export default Tables;
