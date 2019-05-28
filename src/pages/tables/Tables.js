@@ -56,13 +56,33 @@ class Tables extends React.Component {
       {
         title: 'Rotina',
         field: 'rule',
-        lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' },
+        lookup: {},
       },
     ],
   }
 
-  componentDidMount() {
-    axios.get('https://za7gskmdj6.execute-api.us-east-1.amazonaws.com/dev/monitoring/list?userId=1', {
+  async componentDidMount() {
+    await axios.get('https://za7gskmdj6.execute-api.us-east-1.amazonaws.com/dev/rules/list', {
+        headers: {
+          'Content-type': 'aplication/json',
+          'x-api-key': process.env.REACT_APP_X_API_KEY,
+        },
+      })
+        .then(response => response.data)
+        .then(data => {
+          let rules = data.reduce((previous, item) => {
+            previous[item.id_rule] = item.name;
+            return previous;
+          }, {});
+          let columns =  this.state.columns;
+          
+          columns[2].lookup = rules;
+          this.setState({ 
+            columns:  columns,
+          });
+        });
+    
+    await axios.get('https://za7gskmdj6.execute-api.us-east-1.amazonaws.com/dev/monitoring/list?userId=1', {
       headers: {
         'Content-type': 'aplication/json',
         'x-api-key': process.env.REACT_APP_X_API_KEY,
@@ -83,7 +103,7 @@ class Tables extends React.Component {
         <Grid item xs={12}>
           <MaterialTable
             icons={tableIcons}
-            title="Lista de grupos"
+            title=""
             columns={this.state.columns}
             data={this.state.data}
             editable={{
@@ -109,7 +129,6 @@ class Tables extends React.Component {
                 }),
               onRowDelete: oldData =>
                 new Promise(resolve => {
-                  console.log(oldData);
                   let id = oldData.id_group; 
 
                   axios.delete(`https://za7gskmdj6.execute-api.us-east-1.amazonaws.com/dev/monitoring?groupId=${id}`, {
