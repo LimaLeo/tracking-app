@@ -2,7 +2,6 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import MaterialTable from 'material-table';
 import axios from 'axios';
-
 import {
   AddBox,
   Check,
@@ -43,22 +42,22 @@ const tableIcons = {
   ViewColumn: ViewColumn
 };
 
-
-
-
 class Tables extends React.Component {
-  state = {
-    groups: [],
-    ids: [],
-    columns: [
-      { title: 'Nome', field: 'name' },
-      { title: 'Descrição', field: 'description' },
-      {
-        title: 'Rotina',
-        field: 'rule',
-        lookup: {},
-      },
-    ],
+  constructor(props) {
+    super(props);
+    this.state = {
+      groups: [],
+      ids: [],
+      columns: [
+        { title: 'Nome', field: 'name' },
+        { title: 'Descrição', field: 'description' },
+        {
+          title: 'Rotina',
+          field: 'rule',
+          lookup: {},
+        },
+      ],
+    }
   }
 
   async componentDidMount() {
@@ -106,6 +105,20 @@ class Tables extends React.Component {
             title=""
             columns={this.state.columns}
             data={this.state.data}
+            localization={{
+              toolbar: {
+                searchPlaceholder: 'Busca',
+              },
+              body: {
+                  editRow: {
+                    deleteText: 'Deseja excluir definitivamente?'
+                  }
+              },
+              pagination: {
+                labelDisplayedRows: '{from}-{to} de {count}',
+                labelRowsSelect: 'linhas',
+              }
+            }}
             editable={{
               onRowAdd: newData =>
                 new Promise(resolve => {
@@ -119,13 +132,29 @@ class Tables extends React.Component {
                 }),
               onRowUpdate: (newData, oldData) =>
                 new Promise(resolve => {
-                  console.log(newData);
-                  setTimeout(() => {
-                    resolve();
-                    const data = [...this.state.data];
-                    data[data.indexOf(oldData)] = newData;
-                    this.setState({ ...this.state, data });
-                  }, 600);
+                  let id = newData.id_group; 
+                  console.log(newData)
+                  axios.patch(`https://za7gskmdj6.execute-api.us-east-1.amazonaws.com/dev/monitoring?groupId=${id}`, {
+                      "name": newData.name,
+                      "description": newData.description,
+                      "rule_id": parseInt(newData.rule),
+                      "user_id": parseInt(newData.user),
+                    }, {
+                      headers: {
+                        'Content-type': 'aplication/json',
+                        'x-api-key': process.env.REACT_APP_X_API_KEY,
+                      }
+                    })
+                    .then(response => response.data)
+                    .then(data => {
+                      console.log(data);
+                      setTimeout(() => {
+                        resolve();
+                        const data = [...this.state.data];
+                        data[data.indexOf(oldData)] = newData;
+                        this.setState({ ...this.state, data });
+                      }, 600);
+                    });
                 }),
               onRowDelete: oldData =>
                 new Promise(resolve => {
@@ -149,20 +178,6 @@ class Tables extends React.Component {
                     });
                 }),
             }}
-            localization={{
-              toolbar: {
-                searchPlaceholder: 'Busca',
-              },
-              body: {
-                  editRow: {
-                    deleteText: 'Deseja excluir definitivamente?'
-                  }
-              },
-              pagination: {
-                labelDisplayedRows: '{from}-{to} de {count}',
-                labelRowsSelect: 'linhas',
-              }
-          }}
           />
         </Grid>
       </Grid>
