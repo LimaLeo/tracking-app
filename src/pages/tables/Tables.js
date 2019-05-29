@@ -123,17 +123,34 @@ class Tables extends React.Component {
               onRowAdd: newData =>
                 new Promise(resolve => {
                   console.log(newData);
-                  setTimeout(() => {
-                    resolve();
-                    const data = [...this.state.data];
-                    data.push(newData);
-                    this.setState({ ...this.state, data });
-                  }, 600);
+                  let id = newData.id_group; 
+                  
+                  axios.post(`https://za7gskmdj6.execute-api.us-east-1.amazonaws.com/dev/monitoring?groupId=${id}`, {
+                      "name": newData.name,
+                      "description": newData.description,
+                      "rule_id": parseInt(newData.rule),
+                      "user_id": 1,
+                    }, {
+                      headers: {
+                        'Content-type': 'aplication/json',
+                        'x-api-key': process.env.REACT_APP_X_API_KEY,
+                      }
+                    })
+                    .then(response => response.data)
+                    .then(data => {
+                      console.log(data);
+                      setTimeout(() => {
+                        resolve();
+                        const data = [...this.state.data];
+                        data.push(newData);
+                        this.setState({ ...this.state, data });
+                      }, 600);
+                    });
                 }),
               onRowUpdate: (newData, oldData) =>
                 new Promise(resolve => {
                   let id = newData.id_group; 
-                  console.log(newData)
+                  
                   axios.patch(`https://za7gskmdj6.execute-api.us-east-1.amazonaws.com/dev/monitoring?groupId=${id}`, {
                       "name": newData.name,
                       "description": newData.description,
