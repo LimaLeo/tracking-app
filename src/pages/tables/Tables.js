@@ -22,26 +22,6 @@ import {
 
 import PageTitle from '../../components/PageTitle';
 
-const tableIcons = {
-  Add: AddBox,
-  Check: Check,
-  Clear: Clear,
-  Delete: DeleteOutline,
-  DetailPanel: ChevronRight,
-  Edit: Edit,
-  Export: SaveAlt,
-  Filter: FilterList,
-  FirstPage: FirstPage,
-  LastPage: LastPage,
-  NextPage: ChevronRight,
-  PreviousPage: ChevronLeft,
-  ResetSearch: Clear,
-  Search: Search,
-  SortArrow: ArrowUpward,
-  ThirdStateCheck: Remove,
-  ViewColumn: ViewColumn
-};
-
 class Tables extends React.Component {
   constructor(props) {
     super(props);
@@ -57,11 +37,30 @@ class Tables extends React.Component {
           lookup: {},
         },
       ],
+      tableIcons: {
+        Add: AddBox,
+        Check: Check,
+        Clear: Clear,
+        Delete: DeleteOutline,
+        DetailPanel: ChevronRight,
+        Edit: Edit,
+        Export: SaveAlt,
+        Filter: FilterList,
+        FirstPage: FirstPage,
+        LastPage: LastPage,
+        NextPage: ChevronRight,
+        PreviousPage: ChevronLeft,
+        ResetSearch: Clear,
+        Search: Search,
+        SortArrow: ArrowUpward,
+        ThirdStateCheck: Remove,
+        ViewColumn: ViewColumn
+      },
     }
   }
 
-  async componentDidMount() {
-    await axios.get('https://za7gskmdj6.execute-api.us-east-1.amazonaws.com/dev/rules/list', {
+  componentDidMount() {
+    axios.get('https://za7gskmdj6.execute-api.us-east-1.amazonaws.com/dev/rules/list', {
         headers: {
           'Content-type': 'aplication/json',
           'x-api-key': process.env.REACT_APP_X_API_KEY,
@@ -81,7 +80,7 @@ class Tables extends React.Component {
           });
         });
     
-    await axios.get('https://za7gskmdj6.execute-api.us-east-1.amazonaws.com/dev/monitoring/list?userId=1', {
+    axios.get('https://za7gskmdj6.execute-api.us-east-1.amazonaws.com/dev/monitoring/list?userId=1', {
       headers: {
         'Content-type': 'aplication/json',
         'x-api-key': process.env.REACT_APP_X_API_KEY,
@@ -101,7 +100,7 @@ class Tables extends React.Component {
       <Grid container spacing={32}>
         <Grid item xs={12}>
           <MaterialTable
-            icons={tableIcons}
+            icons={this.state.tableIcons}
             title=""
             columns={this.state.columns}
             data={this.state.data}
