@@ -69,7 +69,7 @@ class Tables extends React.Component {
         .then(response => response.data)
         .then(data => {
           let rules = data.reduce((previous, item) => {
-            previous[item.id_rule] = item.name;
+            previous[item.id_rule] = item.description;
             return previous;
           }, {});
           let columns =  this.state.columns;
