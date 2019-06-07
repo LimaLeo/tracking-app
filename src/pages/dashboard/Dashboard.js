@@ -264,7 +264,7 @@ class Dashboard extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <PageTitle title="Dashboard" button="Latest Reports" />
+        <PageTitle title="Dashboard" />
         <Grid container spacing={32}>
           {
             this.state.chartsOptions.map((options, i) => {
