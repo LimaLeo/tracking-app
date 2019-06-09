@@ -164,6 +164,13 @@ class Dashboard extends React.Component {
       xaxis: {
         categories: categories,
       },
+      tooltip: {
+        y: {
+            formatter: function(val) {
+                return `R$ ${val}`;
+            }   
+        }   
+      },
       grid: {
         borderColor: '#f1f1f1',
       }
@@ -268,8 +275,8 @@ class Dashboard extends React.Component {
         <Grid container spacing={32}>
           {
             this.state.chartsOptions.map((options, i) => {
-              return <Grid item xs={4} key={options.chart.id}>
-                      <Chart options={options} series={this.state.chartsSeries[i]} type="line" />
+              return <Grid item xs={6} key={options.chart.id}>
+                      <Chart options={options} series={this.state.chartsSeries[i]} type="line" height={500}/>
                     </Grid>
             })
           }
